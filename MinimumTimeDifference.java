@@ -8,31 +8,37 @@ public class MinimumTimeDifference {
         List<String> timePoints = new ArrayList<>();
         timePoints.add("23:59");
         timePoints.add("00:00");
-        timePoints.add("00:00");
         int result = minimumTimeDifference.findMinDifference(timePoints);
         System.out.println(result);
     }
 
 
     public int findMinDifference(List<String> timePoints){
-
         int[] minutes = new int[timePoints.size()];
-
         for (int i = 0; i < timePoints.size(); i++) {
-            
-            String time = timePoints.get(i);
-            int h = Integer.parseInt(time.substring(0,2));
-            int m = Integer.parseInt(time.substring(3));
-            minutes[i] = h * 60 + m;
+            minutes[i] = convertTimes(timePoints.get(i));
         }
 
         Arrays.sort(minutes);
 
-        int ans = Integer.MAX_VALUE;
+        int minDiff = Integer.MAX_VALUE;
+        int n = minutes.length;
 
-        for (int i = 0; i < minutes.length - 1; i++) {
-            ans = Math.min(ans, minutes[i + 1] + minutes[i]);
+        for (int i = 0; i < n; i++) {
+            int diff = minutes[(i + 1) % n] - minutes[i];
+            if (diff < 0) {
+                diff += 1440; 
+            }
+            minDiff = Math.min(minDiff, diff);
         }
-        return Math.min(ans, 24 * 60 - minutes[minutes.length - 1 ] + minutes[0]);
+
+        return minDiff;
+    }
+
+    int convertTimes(String time){
+        String[] parts = time.split(":");
+        int hours = Integer.parseInt(parts[0]);
+        int minutes = Integer.parseInt(parts[1]);
+        return hours * 60 + minutes;
     }
 }
